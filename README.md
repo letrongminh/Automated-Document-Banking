@@ -1,40 +1,43 @@
-# LLM chat bot - intelligent document processing for home loan applications 
-In this project, I leverage the LLM power to create a chat bot, two services is deployed so far in ly application:
-- FAQ home loan question for different user concerning topic such as market trends, eligibility, etc
-- Automate document processing tasks for home loan documents,summarize and identify missing key info and recommand for approval
+# AI-Powered Document Processing Solution for Banking
 
+## Overview
 
-# Table of content
+This project delivers an intelligent banking solution that leverages Large Language Models (LLMs) to automate document processing and enhance customer service. The platform provides two primary services:
+
+1. **Home Loan FAQ Assistant** - An intelligent system that answers customer questions about home loans, market trends, eligibility requirements, refinancing options, and interest rates.
+
+2. **Automated Loan Document Processing** - A system that analyzes home loan applications, identifies missing information, and provides approval recommendations based on machine learning models.
+
+## Table of Contents
 
 <!--ts-->
-   * [Overal architecture](#overal-architecture)
-   * [Project structure](#project-structure)
-   * [Getting started](#getting-started)
-      * [Prepare enviroment](#prepare-enviroment)
-      * [Running application docker container in local](#running-application-docker-container-in-local)
-   * [Application services](#application-services)
-      * [RAG (Retrieval-Augmented Generation) home loan FAQ](#rag-retrieval-augmented-generation-home-loan-faq)
-        * [Introduction](#introduction)
-        * [System overview](#system-overview)
-        * [Buiding home loan base knowledge](#buiding-home-loan-base-knowledge)
-        * [RAG flow answering](#rag-flow-answering)
-        * [Evaluate](#evaluate)
-        * [Further improvement](#further-improvement)
-        * [Example](#example)
-      * [Personnal home loan recommandation](#personnal-home-loan-recommandation)
-        * [Introduction](#introduction)
-        * [System overview](#system-overview)
-        * [Methodologies](#eethodologies)
-        * [Example](#example)    
+   * [Business Value](#business-value)
+   * [System Architecture](#system-architecture)
+   * [Key Components](#key-components)
+   * [Services](#services)
+      * [Home Loan FAQ Assistant](#home-loan-faq-assistant)
+        * [Capabilities](#capabilities)
+        * [Technology Implementation](#technology-implementation)
+        * [Knowledge Base](#knowledge-base)
+        * [Query Processing](#query-processing)
+        * [Performance Metrics](#performance-metrics)
+        * [Examples](#examples)
+      * [Loan Application Processing](#loan-application-processing)
+        * [Capabilities](#capabilities-1)
+        * [Technical Implementation](#technical-implementation-1)
+        * [ML Model Training](#ml-model-training)
+        * [Examples](#examples-1)
+   * [Installation & Deployment](#installation--deployment)
    * [Demo](#demo)
+   * [Future Enhancements](#future-enhancements)
 <!--te-->
 
          
-# Overal architecture
+# Business Value
 
 ![homeloan_chatbot_architect](images/homeloan_chatbot_architect.png)
 
-# Project structure
+# System Architecture
 ```bash
 ├── backend                                     # Backend application module
 │   ├── docker_clean_up.sh                      # Bash script to clean up application Docker resources  
@@ -113,12 +116,12 @@ In this project, I leverage the LLM power to create a chat bot, two services is 
 │   └── requirements.txt                        # Dependencies for notebooks
 └── README.md                                  # Project documentation
 ```
-# Getting started
+# Installation & Deployment
 
-To get starte with this project, we need to do the following
+To get started with this project, follow these steps:
 
-## Prepare enviroment 
-Install all dependencies dedicated to the project in local
+## Prepare environment 
+Install all dependencies dedicated to the project locally:
 
 ```bash
 python -m venv .venv
@@ -127,7 +130,7 @@ pip install -r backend/requirements.txt
 pip install -r maria_db/requirements.txt
 pip install -r chatbot-ui/requirements.txt
 ```
-Start application on docker container.
+Start application on docker container:
 ```bash
 bash backend/run.sh 
 bash chatbot-ui/run.sh
@@ -136,14 +139,14 @@ bash maria_db/run.sh
 
 ## Running application docker container in local 
 
-Navigating FastAPI deployement using `http://localhost:8082/docs` on host machine
+Navigate to FastAPI documentation using `http://localhost:8082/docs` on host machine
 
-Navigating chat bot interface using  `http://localhost:8051/` on host machine
+Access the chatbot interface using `http://localhost:8051/` on host machine
 
-# Application services 
+# Services 
 
-## RAG (Retrieval-Augmented Generation) home loan FAQ 
-### Introduction 
+## Home Loan FAQ Assistant 
+### Capabilities 
 
 This service is designed to address user's frequently asked questions (FAQs) related to home loans.
 This service covers a range of key topics that users are most concerned about, including:
@@ -154,11 +157,11 @@ This service covers a range of key topics that users are most concerned about, i
 - Interest Rates: Information on current interest rates and how they affect loan repayments.
 - To be added when needed
 
-### System overview
+### Technology Implementation
 
 ![rag_system](images/rag_system.png)
 
-### Buiding home loan base knowledge 
+### Knowledge Base 
 
 The data sources for the service are categorized as follows (to be added):
 | **Category**         | **Source**                                                                                                     |
@@ -187,7 +190,7 @@ The processed data is chunked( into `Node` object represents a "chunk" of a sour
 
 Running `python3 backend/src/rag/rag_flow.py`
 
-### RAG flow answering
+### Query Processing
 The service leverages a Routing and Generation (RAG) approach to accurately answer user queries. Here’s a breakdown of the process:
 
 - **Routing user's intent**: The `user's intent` will be analysed based on chat history and the current message and then a routing mechanism determines the `user's intent` and maps it to the appropriate topic (reference on 5 topics mentionning above) , corresponding to the collection name in the Qdrant vector database for retrieval. The routing process utilizes a custom prompt designed for the LLM model `gpt-4o-mini` using `Role prompting` and `few-shot prompting`, to set up the examples. 
@@ -198,7 +201,7 @@ The service leverages a Routing and Generation (RAG) approach to accurately answ
 
 - **Generating the Final Answer**: The LLM combines the retrieved documents with the user's query and chat history to generate a comprehensive, context-aware response.
 
-### Evaluate 
+### Performance Metrics 
 
 The evaluation metrics currently in use are:
 
@@ -256,7 +259,7 @@ Including 148 questions.
 - Context Relevancy Score: 85%
 
 Further optimization is needed to improve these metrics for better alignment and contextual accuracy in responses.
-### Futher Improvement
+### Examples
 - Expanding/adjust the knowledge base with more diverse data sources.
 - Fine-tuning the embedding and retrieval models for better accuracy.
 
@@ -267,13 +270,13 @@ Further optimization is needed to improve these metrics for better alignment and
 ![faq question: which areas in USA having the most highest housing price ?](images/image-3.png)
 
 
-## Personnal home loan recommendation
-### Introduction 
+## Loan Application Processing
+### Capabilities 
 The service aims to predict and assess a home loan application, identify key missing values in the user's home loan application, and provide/summerize a final recommendation on whether the application is approved or rejected.
 
-### System overview
+### Technical Implementation
 ![homeloan_recommandation](images/homeloan_recommandation.png)
-### Methodologies
+### ML Model Training
 This service utilizes OpenAI agents for planning and integrates two specific tools:
 
 -  Proposing agent prompt to collect the user's home loan application information based on the following mandatory fields from chat history:
@@ -352,7 +355,7 @@ As you can see the model release the different output with the same prompting (t
 
 ![fine_tune_model_res_1](images/fine_tune_model_res-1.png)
 
-### Example
+### Examples
 (TODO: Provide an example of the service in action, including input, processing steps, and final output)
 
 ![home_loan_recommandations](images/home_loan_recommandations.png)
